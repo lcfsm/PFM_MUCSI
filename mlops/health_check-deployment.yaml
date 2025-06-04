@@ -1,0 +1,45 @@
+
+name: health-check
+description: null
+version: 67dd9f1863f9fb97cb4dbc02e0ab3df2
+
+work_queue_name: mlops-pool
+work_pool_name: mlops-pool
+tags:
+  - health
+parameters: {}
+schedule:
+  cron: '*/5 * * * *'
+  timezone: null
+  day_or: true
+is_schedule_active: false
+infra_overrides: {}
+
+
+flow_name: health-check
+manifest_path: null
+infrastructure:
+  type: process
+  env:
+    API_URL: "http://host.docker.internal:8000/health"
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  _block_document_id: 35136157-ef76-456d-a91e-49fe957e2e7f
+  _block_document_name: anonymous-87b3884a-d7f1-4b8c-9a29-ce60ee5122df
+  _is_anonymous: true
+  block_type_slug: process
+  _block_type_slug: process
+storage: null
+path: C:\PFM-MLOPS
+entrypoint: flows\health_check.py:health_check
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties: {}
+  required: null
+  definitions: null
+timestamp: '2025-05-05T09:24:43.215759+00:00'
+triggers: []

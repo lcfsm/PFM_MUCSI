@@ -1,0 +1,40 @@
+
+name: ingest-train-lstm
+description: null
+version: 03a4618d0cde1c38419d209d2d3d79ee
+
+work_queue_name: mlops-pool
+work_pool_name: mlops-pool
+tags:
+  - local
+parameters: {}
+schedule:
+  rrule: 'FREQ=DAILY;BYHOUR=1;BYMINUTE=0;BYSECOND=0'
+  timezone: UTC
+is_schedule_active: true
+infra_overrides: {}
+infrastructure:
+  type: process
+  env: {}
+  labels: {}
+  name: null
+  command: null
+  stream_output: true
+  working_dir: null
+  block_type_slug: process
+  _block_type_slug: process
+
+
+flow_name: Flow_Ingesta_Entrena_LSTM
+manifest_path: null
+storage: null
+path: C:\PFM-MLOPS
+entrypoint: pipeline\flow_ingesta_entrena.py:main_flow
+parameter_openapi_schema:
+  title: Parameters
+  type: object
+  properties: {}
+  required: null
+  definitions: null
+timestamp: '2025-05-01T17:40:13.810035+00:00'
+triggers: []

@@ -1,0 +1,99 @@
+version: "3.9"
+
+#Para lanzar varias replicas hay que comentar la linea "container_name: proxy" e incluir "expose" y comentar "ports"
+#           expose:
+#             - "8000"     # sólo interna, ya no publica en el host
+            # ports:
+            #   - "8000:8000"
+
+services:
+  # ----------------------------------------------------------
+  # FastAPI proxy
+  # ----------------------------------------------------------
+  proxy:
+    build: ./backend
+    container_name: proxy
+    ports:
+      - "8000:8000"            # HOST:CONTAINER
+    volumes:
+      #Montar los artefactos ligeros (.pkl, .json) para el proxy
+      - ./models:/app/models:ro
+    environment:
+      - TF_PAS_URL=http://pasajeros:8501/v1/models/pasajeros:predict
+      - TF_VEH_URL=http://vehiculos:8501/v1/models/vehiculos:predict
+    depends_on:
+      - pasajeros
+      - vehiculos
+    deploy:                    #Gestion de recursos añadida
+      resources:
+        limits:
+          cpus: "0.50"         #maximo ½ CPU
+          memory: 512M
+
+  # ----------------------------------------------------------
+  # TensorFlow-Serving  —  Pasajeros
+  # ----------------------------------------------------------
+  pasajeros:
+    image: tensorflow/serving:latest
+    container_name: tf-pasajeros
+    ports:
+      - "8501:8501"            #expone REST al host (opcional)
+    environment:
+      - MODEL_NAME=pasajeros
+    volumes:
+      - ./models/lstm_model_pasajeros_savedmodel:/models/pasajeros/1:ro
+    deploy:                    #Gestion de recursos añadida
+      resources:
+        limits:
+          cpus: "1.00"         #maximo 1 CPU
+          memory: 1G
+
+  # ----------------------------------------------------------
+  # TensorFlow-Serving  —  Vehiculos
+  # ----------------------------------------------------------
+  vehiculos:
+    image: tensorflow/serving:latest
+    container_name: tf-vehiculos
+    ports:
+      - "8502:8501"
+    environment:
+      - MODEL_NAME=vehiculos
+    volumes:
+      - ./models/lstm_model_vehiculos_savedmodel:/models/vehiculos/1:ro
+    deploy:                    #Gestion de recursos añadida
+      resources:
+        limits:
+          cpus: "1.00"         #maximo 1 CPU
+          memory: 1G
+
+  # ----------------------------------------------------------
+  # Pagina WEB de inferencia
+  # ----------------------------------------------------------
+  frontend:
+    image: python:3.11-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app:ro    #montar carpeta local frontend como solo lectura
+    command: python -m http.server 8001
+    ports:
+      - "8001:8001"           #mapear puerto 8001 del host al 8001 del contenedor
+    deploy:                   #Gestion de recursos añadida
+      resources:
+        limits:
+          cpus: "0.10"         # maximo 0.1 CPU
+          memory: 64M
+
+
+
+  #reporter:
+    #build: ./reporting
+    #env_file:
+      #- .env        #aqui carga PROXY_URL=http://proxy:8000
+    #depends_on:
+      #- proxy       #asegura que el proxy ya este levantado antes
+    #deploy:
+      #resources:
+        #limits:
+          #cpus: "0.20"
+          #memory: 256M
+          

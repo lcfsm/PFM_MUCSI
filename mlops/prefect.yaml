@@ -1,0 +1,33 @@
+
+name: PFM-MLOPS
+prefect-version: 3.4.1
+
+
+build: null
+
+
+push: null
+
+
+pull:
+- prefect.deployments.steps.set_working_directory:
+    directory: C:\PFM-MLOPS
+
+
+deployments:
+- name: ingest-train-lstm
+  version: null
+  tags: []
+  concurrency_limit: null
+  description: null
+  entrypoint: pipeline/flow_ingesta_entrena.py:main_flow
+  parameters: {}
+  work_pool:
+    name: mlops-pool
+    work_queue_name: null
+    job_variables: {}
+  schedules:
+  - cron: 0 1 * * *
+    timezone: null
+    day_or: true
+    active: true
