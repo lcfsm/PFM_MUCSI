@@ -1,7 +1,7 @@
 # PFM-MLOPS - Sistema de Predicción de Tráfico de Pasajeros y Vehiculos
 
 ## Descripción
-Sistema MLOps para predicción de tráfico de pasajeros y vehículos utilizando un modelo LSTM, con orquestación via Prefect, tracking con MLflow y serving con TensorFlow Serving.
+Sistema MLOps para predicción de tráfico de pasajeros y vehículos en el puerto de Algeciras utilizando un modelo de DEEP LEARNING (LSTM), con orquestación via Prefect, tracking con MLflow y serving con TensorFlow Serving.
 
 ## Inicio Rápido - Arranque Completo del Sistema
 
